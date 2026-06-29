@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<rss version="2.0">
+  <channel>
+    <title>생존 - 소상공인 폐업예측 플랫폼</title>
+    <link>https://www.saengjon.site</link>
+    <description>경기도 공공데이터 기반 AI 폐업 예측 서비스</description>
+    <language>ko</language>
+    <lastBuildDate>Mon, 29 Jun 2026 00:00:00 +0900</lastBuildDate>
+    <item>
+      <title>생존 서비스 오픈</title>
+      <link>https://www.saengjon.site</link>
+      <description>소상공인 폐업 위험을 AI로 미리 진단하는 서비스입니다.</description>
+      <pubDate>Mon, 29 Jun 2026 00:00:00 +0900</pubDate>
+    </item>
+  </channel>
+</rss>
