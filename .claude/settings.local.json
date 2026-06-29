@@ -1,0 +1,28 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(curl -s -o /dev/null -w \"JS: %{http_code}\\\\n\" https://kimhg990212.github.io/SaengJon/assets/index-DRGXoB89.js)",
+      "Bash(curl -s -o /dev/null -w \"CSS: %{http_code}\\\\n\" https://kimhg990212.github.io/SaengJon/assets/index-DfXdBcyc.css)",
+      "Bash(curl -s https://kimhg990212.github.io/SaengJon/assets/index-DRGXoB89.js)",
+      "Bash(npm run *)",
+      "Bash(curl -s https://kimhg990212.github.io/SaengJon/)",
+      "Bash(curl -s -D - https://kimhg990212.github.io/SaengJon/)",
+      "Bash(curl -s -L -D - -o /tmp/site.html https://www.saengjon.site/)",
+      "Read(//tmp/**)",
+      "Bash(curl -s -o /dev/null -w \"asset under /SaengJon/: %{http_code}\\\\n\" https://www.saengjon.site/SaengJon/assets/index-BrQvw-7n.js)",
+      "Bash(curl -s -o /dev/null -w \"asset at root: %{http_code}\\\\n\" https://www.saengjon.site/assets/index-BrQvw-7n.js)",
+      "Bash(curl -s -L https://www.saengjon.site/)",
+      "Bash(curl -s -o /dev/null -w \"JS: %{http_code}\\\\n\" https://www.saengjon.site/assets/index-CkJ6fnye.js)",
+      "Bash(gh auth *)",
+      "Bash(gh api *)",
+      "Bash(curl -s -D - -o /tmp/site.html https://www.saengjon.site/)",
+      "Bash(curl -s -D - -o /tmp/gh.html https://kimhg990212.github.io/SaengJon/)",
+      "Bash(curl -s -o /dev/null -w \"github.io root-base JS: %{http_code}\\\\n\" https://kimhg990212.github.io/assets/index-CkJ6fnye.js)",
+      "Bash(curl -s -o /dev/null -w \"github.io /SaengJon/-base JS: %{http_code}\\\\n\" https://kimhg990212.github.io/SaengJon/assets/index-CkJ6fnye.js)",
+      "Bash(git -C \"/c/Users/kimhg/Desktop/SaengJon-main\" show origin/gh-pages:CNAME)",
+      "Bash(git -C \"/c/Users/kimhg/Desktop/SaengJon-main\" fetch origin gh-pages)",
+      "Bash(curl -s -o /dev/null -w \"CSS: %{http_code}\\\\n\" https://www.saengjon.site/assets/index-DfXdBcyc.css)",
+      "Bash(curl -s -o /dev/null -w \"favicon: %{http_code}\\\\n\" https://www.saengjon.site/favicon.svg)"
+    ]
+  }
+}
