@@ -1,8 +1,27 @@
-import { useEffect } from 'react'
+import { useEffect, useState } from 'react'
 import { getRisk, getMonths } from '../data/mockData'
+import { fetchBusinessStatus } from '../api/businessApi'
 
 export default function BusinessModal({ business, onClose }) {
   const months = getMonths()
+  const [bNoInput, setBNoInput] = useState('')
+  const [ntsLoading, setNtsLoading] = useState(false)
+  const [ntsResult, setNtsResult] = useState(null)
+  const [ntsError, setNtsError] = useState(null)
+
+  async function handleNtsLookup() {
+    setNtsLoading(true)
+    setNtsResult(null)
+    setNtsError(null)
+    try {
+      const data = await fetchBusinessStatus(bNoInput)
+      setNtsResult(data)
+    } catch (e) {
+      setNtsError(e.message)
+    } finally {
+      setNtsLoading(false)
+    }
+  }
 
   useEffect(() => {
     const handler = e => { if (e.key === 'Escape') onClose() }
@@ -86,6 +105,64 @@ export default function BusinessModal({ business, onClose }) {
           <button className="w-full mt-5 py-3 bg-indigo-500 hover:bg-indigo-600 text-white rounded-lg text-[13px] font-medium transition-colors">
             PDF 리포트 출력
           </button>
+
+          {/* 국세청 사업자 조회 */}
+          <div className="mt-6 pt-5 border-t border-white/[0.07]">
+            <div className="text-[11px] text-gray-500 uppercase tracking-widest mb-3">국세청 사업자 상태 조회</div>
+            <div className="flex gap-2">
+              <input
+                type="text"
+                placeholder="사업자등록번호 (10자리)"
+                value={bNoInput}
+                onChange={e => setBNoInput(e.target.value)}
+                onKeyDown={e => { if (e.key === 'Enter' && !ntsLoading) handleNtsLookup() }}
+                className="flex-1 bg-[#161b26] border border-white/[0.07] focus:border-indigo-500 rounded-lg px-3 py-2 text-[13px] outline-none transition-colors text-[#e8eaf0] placeholder-gray-600 font-mono"
+              />
+              <button
+                onClick={handleNtsLookup}
+                disabled={ntsLoading || !bNoInput.trim()}
+                className="px-4 py-2 rounded-lg bg-indigo-500 hover:bg-indigo-600 disabled:opacity-40 disabled:cursor-not-allowed text-white text-[13px] font-medium transition-colors"
+              >
+                {ntsLoading ? '조회 중…' : '조회'}
+              </button>
+            </div>
+
+            {ntsError && (
+              <div className="mt-3 px-3 py-2.5 rounded-lg bg-red-500/10 border border-red-500/20 text-red-400 text-[12px]">
+                {ntsError}
+              </div>
+            )}
+
+            {ntsResult && (
+              <div className="mt-3 rounded-lg bg-[#161b26] border border-white/[0.07] overflow-hidden">
+                <div className="px-4 py-3 border-b border-white/[0.07] flex justify-between items-center">
+                  <span className="text-[11px] text-gray-500">사업자번호</span>
+                  <span className="font-mono text-[12px]">{ntsResult.b_no}</span>
+                </div>
+                <div className="px-4 py-3 border-b border-white/[0.07] flex justify-between items-center">
+                  <span className="text-[11px] text-gray-500">납세 유형</span>
+                  <span className="font-mono text-[12px]">{ntsResult.tax_type || '—'}</span>
+                </div>
+                <div className="px-4 py-3 border-b border-white/[0.07] flex justify-between items-center">
+                  <span className="text-[11px] text-gray-500">사업자 상태</span>
+                  <span className={`font-mono text-[12px] ${ntsResult.b_stt_cd === '01' ? 'text-green-400' : 'text-red-400'}`}>
+                    {ntsResult.b_stt || '—'}
+                  </span>
+                </div>
+                {ntsResult.end_dt && (
+                  <div className="px-4 py-3 border-b border-white/[0.07] flex justify-between items-center">
+                    <span className="text-[11px] text-gray-500">폐업일</span>
+                    <span className="font-mono text-[12px] text-red-400">{ntsResult.end_dt}</span>
+                  </div>
+                )}
+                <div className="px-4 py-2.5 flex justify-end">
+                  <span className="text-[10px] text-gray-600">
+                    {ntsResult.cached ? '캐시 데이터 (24h)' : '국세청 실시간 조회'}
+                  </span>
+                </div>
+              </div>
+            )}
+          </div>
         </div>
       </div>
     </div>

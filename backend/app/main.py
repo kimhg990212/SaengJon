@@ -1,19 +1,19 @@
-# FastAPI 애플리케이션 진입점
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
+from app.config import CORS_ORIGINS
+from app.routers import business
 
-from app.config import get_settings
-from app.routers import health
-
-settings = get_settings()
-
-app = FastAPI(title=settings.app_name)
+app = FastAPI(title="SaengJon API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=settings.cors_origins,
+    allow_origins=CORS_ORIGINS,
     allow_methods=["*"],
     allow_headers=["*"],
 )
 
-app.include_router(health.router)
+app.include_router(business.router)
+
+@app.get("/")
+def root():
+    return {"status": "ok"}

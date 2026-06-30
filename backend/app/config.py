@@ -1,18 +1,15 @@
-# 환경변수를 한 곳에서 로드/관리하는 설정 모듈
-from functools import lru_cache
+import os
+from dotenv import load_dotenv
 
-from pydantic_settings import BaseSettings
+load_dotenv()
 
+NTS_API_KEY = os.getenv("NTS_API_KEY")
+DB_HOST = os.getenv("DB_HOST")
+DB_PORT = os.getenv("DB_PORT")
+DB_NAME = os.getenv("DB_NAME")
+DB_USER = os.getenv("DB_USER")
+DB_PASSWORD = os.getenv("DB_PASSWORD")
+CORS_ORIGINS = os.getenv("CORS_ORIGINS", "").split(",")
 
-class Settings(BaseSettings):
-    app_name: str = "SaengJon API"
-    database_url: str = "postgresql://postgres:postgres@localhost:5432/saengjon"
-    cors_origins: list[str] = ["http://localhost:5173"]
-
-    class Config:
-        env_file = ".env"
-
-
-@lru_cache
-def get_settings() -> Settings:
-    return Settings()
+if not NTS_API_KEY:
+    raise RuntimeError("NTS_API_KEY가 .env에 없습니다.")

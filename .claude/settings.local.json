@@ -22,7 +22,15 @@
       "Bash(git -C \"/c/Users/kimhg/Desktop/SaengJon-main\" show origin/gh-pages:CNAME)",
       "Bash(git -C \"/c/Users/kimhg/Desktop/SaengJon-main\" fetch origin gh-pages)",
       "Bash(curl -s -o /dev/null -w \"CSS: %{http_code}\\\\n\" https://www.saengjon.site/assets/index-DfXdBcyc.css)",
-      "Bash(curl -s -o /dev/null -w \"favicon: %{http_code}\\\\n\" https://www.saengjon.site/favicon.svg)"
+      "Bash(curl -s -o /dev/null -w \"favicon: %{http_code}\\\\n\" https://www.saengjon.site/favicon.svg)",
+      "Bash(grep -v -E \"^\\(backend|frontend|dist|\\\\.git|\\\\.claude|node_modules\\)$\")",
+      "Bash(git mv *)",
+      "Bash(mv work-logs/2026-06-30.md frontend/work-logs/2026-06-30.md)",
+      "Bash(rmdir work-logs *)",
+      "Bash(git -C c:/Users/kimhg/Desktop/SaengJon-main status --short)",
+      "Bash(git add *)",
+      "Bash(git rm *)",
+      "PowerShell(Get-ChildItem \"C:\\\\Users\\\\kimhg\\\\Desktop\\\\SaengJon-main\\\\backend_test\" | ForEach-Object { try { Remove-Item $_.FullName -Force -Confirm:$false; \"삭제: $\\($_.Name\\)\" } catch { \"실패: $\\($_.Name\\) - $_\" } })"
     ]
   }
 }
