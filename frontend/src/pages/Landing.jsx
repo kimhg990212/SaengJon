@@ -1,205 +1,277 @@
-// Role: 메인 랜딩 페이지 - Hero 섹션만 표시
-import { useState } from 'react'
+// Role: 메인 랜딩 페이지 - 다크 테마 Hero + Features + How it works
+import React, { useState, useEffect, useRef } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
 import ThemeToggle from '../components/ThemeToggle'
+import ParticleBackground from '../components/ParticleBackground'
+import DiagnosisSimulator from '../components/DiagnosisSimulator'
+
+function easeOutCubic(t) { return 1 - Math.pow(1 - t, 3) }
+
+function useCountUp(target, duration, startVal) {
+  const [value, setValue] = useState(startVal)
+  const rafRef = useRef(null)
+  useEffect(() => {
+    const startTime = performance.now()
+    function tick(now) {
+      const t = Math.min((now - startTime) / duration, 1)
+      setValue(Math.round(startVal + (target - startVal) * easeOutCubic(t)))
+      if (t < 1) rafRef.current = requestAnimationFrame(tick)
+    }
+    rafRef.current = requestAnimationFrame(tick)
+    return () => cancelAnimationFrame(rafRef.current)
+  }, [])
+  return value
+}
+
+const S = {
+  page:    { background: '#070d07', fontFamily: 'Roboto Mono, monospace', color: '#e2e8f0', minHeight: '100vh' },
+  hero:    { position: 'relative', overflow: 'hidden', minHeight: '100vh', display: 'flex', flexDirection: 'column' },
+  grid:    { position: 'absolute', inset: 0, zIndex: 1, pointerEvents: 'none',
+             backgroundImage: 'linear-gradient(rgba(34,197,94,0.05) 1px, transparent 1px), linear-gradient(90deg, rgba(34,197,94,0.05) 1px, transparent 1px)',
+             backgroundSize: '48px 48px' },
+  vignette:{ position: 'absolute', inset: 0, zIndex: 2, pointerEvents: 'none',
+             background: 'radial-gradient(ellipse at center, transparent 35%, rgba(7,13,7,0.85) 100%)' },
+  nav:     { position: 'relative', zIndex: 10, display: 'flex', justifyContent: 'space-between', alignItems: 'center',
+             padding: '20px 40px', borderBottom: '1px solid rgba(34,197,94,0.08)' },
+  content: { position: 'relative', zIndex: 10, flex: 1, display: 'flex', alignItems: 'center',
+             padding: '60px 40px', maxWidth: 1400, margin: '0 auto', width: '100%', gap: 64, boxSizing: 'border-box' },
+  section: { padding: '80px 40px', borderTop: '1px solid rgba(255,255,255,0.05)' },
+  inner:   { maxWidth: 1400, margin: '0 auto' },
+}
 
 export default function Landing() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
   const [showConfirm, setShowConfirm] = useState(false)
 
+  // 카운트업 시작값: 82% 지점 또는 지정값
+  const count1 = useCountUp(124500, 1600, Math.round(124500 * 0.82))
+  const count2 = useCountUp(84,     1200, Math.round(84 * 0.82))
+  const count3 = useCountUp(8,       800, 7)
+
   return (
-    <div className="min-h-screen bg-white text-[#0a0c10] dark:bg-[#0a0c10] dark:text-[#e8eaf0] overflow-x-hidden font-['Noto_Sans_KR'] transition-colors">
+    <div style={S.page}>
 
-      {/* Nav */}
-      <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-10 py-5 border-b border-black/[0.06] dark:border-white/[0.05] backdrop-blur-md bg-white/80 dark:bg-[#0a0c10]/80">
-        <div className="cursor-pointer" onClick={() => setShowConfirm(true)}>
-          <span className="font-['Syne'] text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">생존</span>
-          <span className="font-mono text-[10px] text-gray-400 dark:text-gray-600 ml-2">SAENGJEON</span>
-        </div>
-        <div className="flex items-center gap-6">
-          <span
-            onClick={() => navigate('/service')}
-            className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors"
-          >서비스 소개</span>
-          <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">데이터 파트너</span>
-          <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">요금제</span>
-          <ThemeToggle theme={theme} onToggle={toggleTheme} />
-        </div>
-      </nav>
+      {/* ── Hero ── */}
+      <section style={S.hero}>
+        <ParticleBackground />
+        <div style={S.grid} />
+        <div style={S.vignette} />
 
-      {/* Hero */}
-      <section className="min-h-screen flex items-center px-10 pt-20 max-w-[1400px] mx-auto">
-        {/* Left */}
-        <div className="flex-1">
-          <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-green-500/30 bg-green-500/10 text-green-600 dark:text-green-400 text-[11px] font-mono mb-8">
-            <span className="w-1.5 h-1.5 rounded-full bg-green-400 animate-pulse" />
-            경기도 공공데이터 기반 AI 예측
+        {/* Nav */}
+        <nav style={S.nav}>
+          <div style={{ cursor: 'pointer' }} onClick={() => setShowConfirm(true)}>
+            <span style={{ fontFamily: 'Syne, sans-serif', fontSize: 20, fontWeight: 800, color: '#fff', letterSpacing: -0.5 }}>생존</span>
+            <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginLeft: 8 }}>SAENGJEON</span>
           </div>
-
-          <h1 className="font-['Syne'] text-[64px] font-extrabold leading-[1.08] tracking-[-1.5px] mb-6">
-            소상공인<br />
-            <span className="text-green-600 dark:text-green-400">폐업 예방</span><br />
-            솔루션 플랫폼
-          </h1>
-
-          <p className="text-[15px] text-gray-500 dark:text-gray-400 leading-relaxed mb-10 max-w-md">
-            사업자등록번호 하나로 폐업 위험을 AI가 미리 진단합니다.<br />
-            경기도 실제 공공데이터 기반, 객관적인 수치로.
-          </p>
-
-          <div className="flex gap-3 mb-14">
-            <button
-              onClick={() => navigate('/diagnose')}
-              className="px-7 py-3.5 bg-green-500 hover:bg-green-600 text-white text-[14px] font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20 hover:-translate-y-0.5"
-            >
-              무료로 진단받기 →
-            </button>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 24 }}>
+            <span onClick={() => navigate('/service')} style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>서비스 소개</span>
+            <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>데이터 파트너</span>
+            <span style={{ fontSize: 13, color: 'rgba(255,255,255,0.5)', cursor: 'pointer' }}>요금제</span>
+            <ThemeToggle theme={theme} onToggle={toggleTheme} />
           </div>
+        </nav>
 
-          {/* Stats */}
-          <div className="flex gap-10 border-t border-black/[0.07] dark:border-white/[0.07] pt-10">
-            <div>
-              <div className="font-['Roboto_Mono'] text-[32px] font-light text-gray-900 dark:text-white leading-none tracking-tight">4,821</div>
-              <div className="text-[12px] text-gray-500 mt-1">분석 완료 업체</div>
-            </div>
-            <div className="w-px bg-black/[0.07] dark:bg-white/[0.07]" />
-            <div>
-              <div className="font-['Roboto_Mono'] text-[32px] font-light text-red-500 dark:text-red-400 leading-none tracking-tight">312</div>
-              <div className="text-[12px] text-gray-500 mt-1">이번 달 위험 감지</div>
-            </div>
-            <div className="w-px bg-black/[0.07] dark:bg-white/[0.07]" />
-            <div>
-              <div className="font-['Roboto_Mono'] text-[32px] font-light text-green-600 dark:text-green-400 leading-none tracking-tight">94%</div>
-              <div className="text-[12px] text-gray-500 mt-1">예측 정확도</div>
-            </div>
-          </div>
-        </div>
+        {/* Hero 컨텐츠 */}
+        <div style={S.content} className="hero-content">
 
-        {/* Right — 기능 목업 */}
-        <div className="w-[440px] flex-shrink-0 flex flex-col gap-3">
-          {/* 위험 스코어 카드 */}
-          <div className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-2xl p-5 hover:border-green-500/20 transition-all">
-            <div className="flex justify-between items-center mb-4">
+          {/* 좌측 */}
+          <div style={{ flex: 1, minWidth: 0 }}>
+            {/* Live 뱃지 */}
+            <div style={{
+              display: 'inline-flex', alignItems: 'center', gap: 8,
+              padding: '5px 14px', borderRadius: 100,
+              border: '1px solid rgba(34,197,94,0.35)', background: 'rgba(34,197,94,0.06)',
+              marginBottom: 28,
+            }}>
+              <span style={{ width: 6, height: 6, borderRadius: '50%', background: '#22c55e', animation: 'liveblink 1.2s ease-in-out infinite' }} />
+              <span style={{ fontSize: 11, color: '#4ade80', letterSpacing: 1 }}>LIVE · 경기도 소상공인 AI 진단</span>
+            </div>
+
+            {/* H1 */}
+            <h1 style={{
+              fontFamily: 'Syne, sans-serif', fontWeight: 800,
+              fontSize: 'clamp(36px, 4vw, 58px)', lineHeight: 1.1,
+              letterSpacing: -2, marginBottom: 24, color: '#fff',
+            }}>
+              폐업 <span style={{ color: '#22c55e' }}>6개월 전</span>,<br />
+              신호는 이미<br />
+              데이터에 있다
+            </h1>
+
+            {/* 부제 */}
+            <p style={{ fontSize: 14, color: 'rgba(255,255,255,0.45)', lineHeight: 1.9, marginBottom: 36 }}>
+              사업자등록번호 입력 하나로<br />
+              국세청 · 카드매출 · 유동인구 · 상권정보<br />
+              8개 공공데이터를 AI가 즉시 분석합니다
+            </p>
+
+            {/* 통계 */}
+            <div style={{ display: 'flex', gap: 28, marginBottom: 40, flexWrap: 'wrap' }}>
               <div>
-                <div className="text-[11px] text-gray-500 font-mono uppercase tracking-widest mb-1">위험 진단</div>
-                <div className="font-semibold text-[15px]">수원갈비집</div>
-                <div className="text-[11px] text-gray-500 mt-0.5">수원시 팔달구 · 한식</div>
-              </div>
-              <div className="text-right">
-                <div className="font-['Roboto_Mono'] text-[52px] font-light leading-none text-red-500 dark:text-red-400 tracking-tight">92</div>
-                <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[10px] font-mono mt-1">위험</div>
-              </div>
-            </div>
-            <div className="h-1.5 bg-gray-200 dark:bg-[#161b26] rounded-full overflow-hidden mb-3">
-              <div className="h-full rounded-full bg-gradient-to-r from-green-500 via-yellow-400 to-red-500" style={{ width: '92%' }} />
-            </div>
-            <div className="grid grid-cols-3 gap-2">
-              {[
-                { label: '매출 변화', val: '▼ 31%' },
-                { label: '유동인구', val: '▼ 28%' },
-                { label: '밀집도', val: '높음' },
-              ].map(f => (
-                <div key={f.label} className="bg-gray-100 dark:bg-[#161b26] rounded-lg px-3 py-2 text-center">
-                  <div className="text-[10px] text-gray-500 mb-0.5">{f.label}</div>
-                  <div className="text-[12px] font-mono text-red-600 dark:text-red-400">{f.val}</div>
+                <div style={{ fontFamily: 'Roboto Mono, monospace', fontSize: 26, fontWeight: 300, color: '#22c55e', lineHeight: 1 }}>
+                  {count1.toLocaleString()}<span style={{ fontSize: 14 }}>개</span>
                 </div>
-              ))}
-            </div>
-          </div>
-
-          {/* 6개월 트렌드 */}
-          <div className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-2xl p-5 hover:border-green-500/20 transition-all">
-            <div className="text-[11px] text-gray-500 font-mono uppercase tracking-widest mb-3">6개월 위험지수 추이</div>
-            <div className="flex items-end gap-1.5 h-16">
-              {[38, 48, 58, 70, 81, 92].map((v, i) => {
-                const c = v >= 80 ? '#ef4444' : v >= 60 ? '#f97316' : v >= 40 ? '#eab308' : '#22c55e'
-                return (
-                  <div key={i} className="flex-1 flex flex-col items-center gap-1">
-                    <div className="w-full rounded-t-sm" style={{ height: `${v * 0.6}px`, background: c, opacity: 0.85 }} />
-                    <div className="text-[9px] text-gray-500 dark:text-gray-600 font-mono">{v}</div>
-                  </div>
-                )
-              })}
-            </div>
-            <div className="flex justify-between mt-1">
-              {['1월','2월','3월','4월','5월','6월'].map(m => (
-                <div key={m} className="flex-1 text-center text-[9px] text-gray-500 dark:text-gray-600 font-mono">{m}</div>
-              ))}
-            </div>
-          </div>
-
-          {/* 위험 업체 리스트 미니 */}
-          <div className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-2xl p-5 hover:border-green-500/20 transition-all">
-            <div className="flex justify-between items-center mb-3">
-              <div className="text-[11px] text-gray-500 font-mono uppercase tracking-widest">위험 업체 현황</div>
-              <div className="text-[11px] text-red-500 dark:text-red-400 font-mono">● 5건 긴급</div>
-            </div>
-            {[
-              { name:'수원갈비집', score:92, color:'text-red-500 dark:text-red-400' },
-              { name:'성남PC방', score:88, color:'text-red-500 dark:text-red-400' },
-              { name:'부천 꽃집', score:83, color:'text-orange-500 dark:text-orange-400' },
-            ].map(b => (
-              <div key={b.name} className="flex justify-between items-center py-2 border-b border-black/[0.05] dark:border-white/[0.05] last:border-0">
-                <span className="text-[13px]">{b.name}</span>
-                <div className="flex items-center gap-2">
-                  <div className="w-20 h-1 bg-gray-200 dark:bg-[#161b26] rounded-full overflow-hidden">
-                    <div className="h-full rounded-full bg-red-400" style={{ width: `${b.score}%` }} />
-                  </div>
-                  <span className={`font-mono text-[12px] ${b.color}`}>{b.score}</span>
-                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 5 }}>경기도 분석 사업체</div>
               </div>
-            ))}
+              <div style={{ width: 1, background: 'rgba(255,255,255,0.07)' }} />
+              <div>
+                <div style={{ fontFamily: 'Roboto Mono, monospace', fontSize: 26, fontWeight: 300, color: '#22c55e', lineHeight: 1 }}>
+                  {count2}<span style={{ fontSize: 14 }}>%</span>
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 5 }}>6개월 전 예측 정확도</div>
+              </div>
+              <div style={{ width: 1, background: 'rgba(255,255,255,0.07)' }} />
+              <div>
+                <div style={{ fontFamily: 'Roboto Mono, monospace', fontSize: 26, fontWeight: 300, color: '#22c55e', lineHeight: 1 }}>
+                  {count3}<span style={{ fontSize: 14 }}>개</span>
+                </div>
+                <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', marginTop: 5 }}>활용 공공데이터</div>
+              </div>
+            </div>
+
+            {/* CTA 버튼 */}
+            <div style={{ display: 'flex', gap: 12, flexWrap: 'wrap' }}>
+              <button
+                onClick={() => navigate('/diagnose')}
+                style={{
+                  padding: '13px 28px', borderRadius: 12,
+                  background: '#22c55e', color: '#052e16',
+                  fontSize: 14, fontWeight: 700, border: 'none', cursor: 'pointer',
+                  fontFamily: 'Roboto Mono, monospace',
+                  boxShadow: '0 8px 24px rgba(34,197,94,0.25)',
+                }}
+              >
+                무료 진단 시작하기
+              </button>
+              <button
+                onClick={() => navigate('/service')}
+                style={{
+                  padding: '13px 28px', borderRadius: 12,
+                  background: 'transparent', color: 'rgba(255,255,255,0.65)',
+                  fontSize: 14, border: '1px solid rgba(255,255,255,0.15)',
+                  cursor: 'pointer', fontFamily: 'Roboto Mono, monospace',
+                }}
+              >
+                서비스 소개 ↓
+              </button>
+            </div>
           </div>
 
-          {/* 데이터 소스 뱃지 */}
-          <div className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-2xl p-4 hover:border-green-500/20 transition-all">
-            <div className="text-[11px] text-gray-500 font-mono uppercase tracking-widest mb-3">연동 데이터 소스</div>
-            <div className="flex flex-wrap gap-2">
-              {['경기데이터드림', '공공데이터포털', '소진공 API', '행정안전부', '국세청'].map(s => (
-                <span key={s} className="px-3 py-1 bg-gray-100 dark:bg-[#161b26] border border-black/[0.05] dark:border-white/[0.05] rounded-full text-[11px] text-gray-500 dark:text-gray-400">
-                  {s}
-                </span>
-              ))}
-            </div>
+          {/* 우측 - 진단 시뮬레이터 */}
+          <div className="simulator-wrap">
+            <DiagnosisSimulator />
           </div>
         </div>
       </section>
 
-      {/* Footer */}
-      <footer className="border-t border-black/[0.06] dark:border-white/[0.05] px-10 py-7 flex justify-between items-center">
-        <div>
-          <span className="font-['Syne'] font-bold text-gray-900 dark:text-white">생존</span>
-          <span className="font-mono text-[10px] text-gray-400 dark:text-gray-600 ml-2">by HelperLab</span>
+      {/* ── Features ── */}
+      <section style={S.section}>
+        <div style={S.inner}>
+          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: 20 }} className="features-grid">
+            {[
+              { icon: '🔍', title: '실시간 상태조회',      desc: '국세청 사업자등록 상태를 실시간으로 확인. 휴업·폐업 여부를 즉시 파악합니다.',          tag: '국세청 OpenAPI' },
+              { icon: '📊', title: '8개 공공데이터 분석',  desc: '카드매출·유동인구·임대료·상권정보 등 경기도 공공데이터를 통합 분석합니다.',          tag: '경기데이터드림' },
+              { icon: '🤖', title: 'AI 위험도 스코어링',  desc: '5년 폐업 이력 학습 기반 AI가 6개월 후 폐업 위험을 0~100점으로 진단합니다.',    tag: 'HelperLab AI' },
+            ].map(f => (
+              <div key={f.title} style={{
+                background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                borderRadius: 16, padding: 28,
+              }}>
+                <div style={{ fontSize: 28, marginBottom: 14 }}>{f.icon}</div>
+                <h3 style={{ fontFamily: 'Syne, sans-serif', fontSize: 17, fontWeight: 700, color: '#fff', marginBottom: 10 }}>{f.title}</h3>
+                <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.42)', lineHeight: 1.75, marginBottom: 16 }}>{f.desc}</p>
+                <span style={{
+                  fontSize: 10, color: '#4ade80',
+                  border: '1px solid rgba(34,197,94,0.3)', borderRadius: 100, padding: '3px 10px',
+                }}>{f.tag}</span>
+              </div>
+            ))}
+          </div>
         </div>
-        <div className="text-[12px] text-gray-500 dark:text-gray-600">© 2026 HelperLab. 경기도 소상공인 AI 폐업예측 플랫폼</div>
+      </section>
+
+      {/* ── How it works ── */}
+      <section style={S.section}>
+        <div style={S.inner}>
+          <h2 style={{ fontFamily: 'Syne, sans-serif', fontSize: 34, fontWeight: 800, color: '#fff', textAlign: 'center', marginBottom: 48 }}>
+            어떻게 작동하나요?
+          </h2>
+          <div style={{ display: 'flex', alignItems: 'center', gap: 16 }} className="steps-row">
+            {[
+              { num: '01', title: '사업자등록번호 입력', desc: '10자리 번호만 입력하면 끝' },
+              { num: '02', title: 'AI 자동 분석',        desc: '8개 공공데이터 실시간 수집 및 패턴 분석' },
+              { num: '03', title: '위험도 리포트',        desc: '6개월 전 폐업 신호를 0~100 점수로 즉시 확인' },
+            ].map((s, i) => (
+              <React.Fragment key={s.num}>
+                <div style={{
+                  flex: 1, background: 'rgba(255,255,255,0.03)', border: '1px solid rgba(255,255,255,0.07)',
+                  borderRadius: 16, padding: '28px 24px', textAlign: 'center',
+                }}>
+                  <div style={{ fontSize: 11, color: 'rgba(255,255,255,0.25)', letterSpacing: 2, marginBottom: 12 }}>{s.num}</div>
+                  <div style={{ fontFamily: 'Syne, sans-serif', fontSize: 16, fontWeight: 700, color: '#fff', marginBottom: 8 }}>{s.title}</div>
+                  <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.42)', lineHeight: 1.7 }}>{s.desc}</div>
+                </div>
+                {i < 2 && (
+                  <div style={{ fontSize: 20, color: '#22c55e', flexShrink: 0 }}>→</div>
+                )}
+              </React.Fragment>
+            ))}
+          </div>
+        </div>
+      </section>
+
+      {/* ── Footer ── */}
+      <footer style={{ padding: '24px 40px', borderTop: '1px solid rgba(255,255,255,0.05)', textAlign: 'center' }}>
+        <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.2)' }}>
+          © 2026 HelperLab · 생존(SaengJon) · 경기도 소상공인 AI 진단 서비스
+        </div>
       </footer>
 
       {/* 처음화면 확인 다이얼로그 */}
       {showConfirm && (
-        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#10141c] rounded-2xl p-8 shadow-2xl border border-black/[0.08] dark:border-white/[0.08] max-w-sm w-full mx-4">
-            <div className="text-2xl mb-4 text-center">🏠</div>
-            <h3 className="font-['Syne'] text-[18px] font-bold text-center mb-2">처음 화면으로 돌아가시겠습니까?</h3>
-            <p className="text-[13px] text-gray-500 text-center mb-7">메인 페이지로 이동합니다.</p>
-            <div className="flex gap-3">
+        <div style={{
+          position: 'fixed', inset: 0, zIndex: 100,
+          display: 'flex', alignItems: 'center', justifyContent: 'center',
+          background: 'rgba(0,0,0,0.6)', backdropFilter: 'blur(4px)',
+        }}>
+          <div style={{
+            background: '#10141c', borderRadius: 16, padding: 32,
+            border: '1px solid rgba(255,255,255,0.1)', maxWidth: 360, width: '90%',
+          }}>
+            <div style={{ fontSize: 24, textAlign: 'center', marginBottom: 12 }}>🏠</div>
+            <h3 style={{ fontFamily: 'Syne, sans-serif', fontSize: 18, fontWeight: 700, textAlign: 'center', marginBottom: 8, color: '#fff' }}>
+              처음 화면으로 돌아가시겠습니까?
+            </h3>
+            <p style={{ fontSize: 13, color: 'rgba(255,255,255,0.4)', textAlign: 'center', marginBottom: 24 }}>메인 페이지로 이동합니다.</p>
+            <div style={{ display: 'flex', gap: 12 }}>
               <button
                 onClick={() => { setShowConfirm(false); navigate('/') }}
-                className="flex-1 py-2.5 bg-green-500 hover:bg-green-600 text-white text-[14px] font-semibold rounded-xl transition-all"
-              >
-                확인
-              </button>
+                style={{ flex: 1, padding: 10, background: '#22c55e', color: '#052e16', border: 'none', borderRadius: 10, cursor: 'pointer', fontSize: 14, fontWeight: 700 }}
+              >확인</button>
               <button
                 onClick={() => setShowConfirm(false)}
-                className="flex-1 py-2.5 border border-black/[0.1] dark:border-white/[0.1] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.05] text-[14px] rounded-xl transition-all"
-              >
-                취소
-              </button>
+                style={{ flex: 1, padding: 10, background: 'transparent', color: 'rgba(255,255,255,0.5)', border: '1px solid rgba(255,255,255,0.15)', borderRadius: 10, cursor: 'pointer', fontSize: 14 }}
+              >취소</button>
             </div>
           </div>
         </div>
       )}
+
+      <style>{`
+        @keyframes liveblink {
+          0%, 100% { opacity: 1; }
+          50%       { opacity: 0.3; }
+        }
+        @media (max-width: 768px) {
+          .hero-content   { flex-direction: column !important; padding: 32px 20px !important; }
+          .simulator-wrap { width: 100% !important; }
+          .simulator-wrap > div { width: 100% !important; box-sizing: border-box; }
+          .features-grid  { grid-template-columns: 1fr !important; }
+          .steps-row      { flex-direction: column !important; }
+        }
+      `}</style>
     </div>
   )
 }
