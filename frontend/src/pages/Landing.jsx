@@ -207,7 +207,7 @@ export default function Landing() {
 
           {/* 우측 */}
           <div className="simulator-wrap">
-            <DiagnosisSimulator />
+            <DiagnosisSimulator theme={theme} />
           </div>
         </div>
       </section>

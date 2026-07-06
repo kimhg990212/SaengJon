@@ -82,7 +82,32 @@ function drawSparkline(canvas, data, color) {
   ctx.stroke()
 }
 
-export default function DiagnosisSimulator() {
+function makeSimColors(isDark) {
+  return {
+    cardBg:      isDark ? '#0a1209'                      : '#ffffff',
+    cardBorder:  isDark ? 'rgba(34,197,94,0.2)'          : 'rgba(34,197,94,0.25)',
+    bizName:     isDark ? '#e2e8f0'                      : '#0a1209',
+    bizNo:       isDark ? 'rgba(255,255,255,0.35)'       : 'rgba(0,0,0,0.45)',
+    badgeBadBg:  isDark ? 'rgba(239,68,68,0.12)'        : 'rgba(239,68,68,0.08)',
+    badgeBadBd:  isDark ? 'rgba(239,68,68,0.3)'         : 'rgba(239,68,68,0.25)',
+    badgeBadTxt: isDark ? '#f87171'                      : '#dc2626',
+    badgeOkBg:   isDark ? 'rgba(34,197,94,0.12)'        : 'rgba(34,197,94,0.08)',
+    badgeOkBd:   isDark ? 'rgba(34,197,94,0.3)'         : 'rgba(34,197,94,0.25)',
+    badgeOkTxt:  isDark ? '#4ade80'                      : '#16a34a',
+    gaugeLabel:  isDark ? 'rgba(255,255,255,0.35)'       : 'rgba(0,0,0,0.45)',
+    gaugeTrack:  isDark ? 'rgba(255,255,255,0.07)'       : 'rgba(0,0,0,0.08)',
+    gaugeHint:   isDark ? 'rgba(255,255,255,0.2)'        : 'rgba(0,0,0,0.25)',
+    metricBg:    isDark ? 'rgba(255,255,255,0.04)'       : 'rgba(0,0,0,0.04)',
+    metricLabel: isDark ? 'rgba(255,255,255,0.3)'        : 'rgba(0,0,0,0.4)',
+    msgText:     isDark ? 'rgba(255,255,255,0.4)'        : 'rgba(0,0,0,0.45)',
+    msgDone:     isDark ? '#4ade80'                      : '#16a34a',
+  }
+}
+
+export default function DiagnosisSimulator({ theme = 'dark' }) {
+  const isDark = theme === 'dark'
+  const c = makeSimColors(isDark)
+
   const [scIdx, setScIdx]         = useState(0)
   const [msgIdx, setMsgIdx]       = useState(0)
   const [done, setDone]           = useState(false)
@@ -146,8 +171,8 @@ export default function DiagnosisSimulator() {
 
   return (
     <div style={{
-      background: '#0a1209',
-      border: '1px solid rgba(34,197,94,0.2)',
+      background: c.cardBg,
+      border: `1px solid ${c.cardBorder}`,
       borderRadius: 10,
       padding: 24,
       width: 480,
@@ -155,6 +180,7 @@ export default function DiagnosisSimulator() {
       overflow: 'hidden',
       fontFamily: 'Roboto Mono, monospace',
       flexShrink: 0,
+      transition: 'background 0.25s, border-color 0.25s',
     }}>
       {/* Scan line */}
       <div style={{
@@ -166,14 +192,14 @@ export default function DiagnosisSimulator() {
       {/* 헤더 */}
       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
         <div>
-          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 19, color: '#e2e8f0', marginBottom: 4 }}>{sc.biz}</div>
-          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', letterSpacing: 0.3 }}>{sc.bno}</div>
+          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 19, color: c.bizName, marginBottom: 4 }}>{sc.biz}</div>
+          <div style={{ fontSize: 12, color: c.bizNo, letterSpacing: 0.3 }}>{sc.bno}</div>
         </div>
         <div style={{
           padding: '4px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, whiteSpace: 'nowrap',
-          background: sc.bad ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.12)',
-          border: `1px solid ${sc.bad ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.3)'}`,
-          color: sc.bad ? '#f87171' : '#4ade80',
+          background: sc.bad ? c.badgeBadBg : c.badgeOkBg,
+          border: `1px solid ${sc.bad ? c.badgeBadBd : c.badgeOkBd}`,
+          color: sc.bad ? c.badgeBadTxt : c.badgeOkTxt,
         }}>
           {sc.bad ? '위험감지' : '계속사업자'}
         </div>
@@ -182,10 +208,10 @@ export default function DiagnosisSimulator() {
       {/* 게이지 */}
       <div style={{ marginBottom: 18 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 8 }}>
-          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', letterSpacing: 1, textTransform: 'uppercase' }}>폐업 위험도</span>
+          <span style={{ fontSize: 11, color: c.gaugeLabel, letterSpacing: 1, textTransform: 'uppercase' }}>폐업 위험도</span>
           <span style={{ fontSize: 40, fontWeight: 300, color: gaugeColor, lineHeight: 1 }}>{displayScore}</span>
         </div>
-        <div style={{ height: 7, background: 'rgba(255,255,255,0.07)', borderRadius: 4, overflow: 'hidden' }}>
+        <div style={{ height: 7, background: c.gaugeTrack, borderRadius: 4, overflow: 'hidden' }}>
           <div style={{
             height: '100%', borderRadius: 4,
             background: `linear-gradient(90deg, #22c55e, ${gaugeColor})`,
@@ -193,7 +219,7 @@ export default function DiagnosisSimulator() {
             transition: 'width 0.05s linear',
           }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 4 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: c.gaugeHint, marginTop: 4 }}>
           <span>안전 0</span><span>50</span><span>100 위험</span>
         </div>
       </div>
@@ -208,22 +234,22 @@ export default function DiagnosisSimulator() {
       {/* 메트릭 2×2 */}
       <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
         {metrics.map(m => (
-          <div key={m.label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 14px' }}>
-            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginBottom: 4, letterSpacing: 0.3 }}>{m.label}</div>
+          <div key={m.label} style={{ background: c.metricBg, borderRadius: 8, padding: '10px 14px' }}>
+            <div style={{ fontSize: 10, color: c.metricLabel, marginBottom: 4, letterSpacing: 0.3 }}>{m.label}</div>
             <div style={{ fontSize: 16, fontWeight: 500, color: m.color }}>{m.val}</div>
           </div>
         ))}
       </div>
 
       {/* 분석 메시지 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: c.msgText }}>
         <span style={{
           width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
           background: '#22c55e',
           boxShadow: done ? '0 0 8px #22c55e' : 'none',
           animation: done ? 'none' : 'blink 0.8s ease-in-out infinite',
         }} />
-        <span style={{ color: done ? '#4ade80' : 'rgba(255,255,255,0.4)' }}>{MESSAGES[msgIdx]}</span>
+        <span style={{ color: done ? c.msgDone : c.msgText }}>{MESSAGES[msgIdx]}</span>
       </div>
 
       <style>{`
