@@ -1,4 +1,5 @@
 from pydantic import BaseModel, field_validator
+from typing import Optional
 
 class BusinessStatusResponse(BaseModel):
     b_no: str
@@ -7,6 +8,20 @@ class BusinessStatusResponse(BaseModel):
     tax_type: str
     end_dt: str | None = None
     cached: bool
+
+class SangkwonResult(BaseModel):
+    bizes_id: str
+    bizes_nm: str
+    branch_nm: Optional[str] = None
+    indu_lclass_nm: Optional[str] = None
+    indu_mclass_nm: Optional[str] = None
+    indu_sclass_nm: Optional[str] = None
+    sgg_nm: Optional[str] = None
+    admdong_nm: Optional[str] = None
+    road_addr: Optional[str] = None
+    lon: Optional[float] = None
+    lat: Optional[float] = None
+
 
 class BusinessStatusRequest(BaseModel):
     b_no: str

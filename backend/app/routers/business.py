@@ -2,7 +2,7 @@ from fastapi import APIRouter, HTTPException
 from datetime import datetime, timedelta
 from app.db import get_conn, release_conn
 from app.apis.nts_api import lookup_business_status, NtsApiError
-from app.schemas.business import BusinessStatusRequest, BusinessStatusResponse
+from app.schemas.business import BusinessStatusRequest, BusinessStatusResponse, SangkwonResult
 
 router = APIRouter(prefix="/api/business", tags=["business"])
 
@@ -51,5 +51,36 @@ def get_business_status(req: BusinessStatusRequest):
             b_no=result["b_no"], b_stt=result["b_stt"], b_stt_cd=result["b_stt_cd"],
             tax_type=result["tax_type"], end_dt=result.get("end_dt") or None, cached=False
         )
+    finally:
+        release_conn(conn)
+
+
+@router.get("/search", response_model=list[SangkwonResult])
+def search_store(q: str, sgg: str | None = None):
+    """상호명으로 소진공 DB 검색. 최대 10건."""
+    if len(q.strip()) < 2:
+        raise HTTPException(status_code=400, detail="검색어는 2글자 이상 입력해주세요.")
+    conn = get_conn()
+    try:
+        cur = conn.cursor()
+        base_sql = (
+            "SELECT bizes_id, bizes_nm, branch_nm, indu_lclass_nm, indu_mclass_nm, "
+            "indu_sclass_nm, sgg_nm, admdong_nm, road_addr, lon, lat "
+            "FROM sangkwon WHERE bizes_nm ILIKE %s"
+        )
+        params = [f"%{q.strip()}%"]
+        if sgg:
+            base_sql += " AND sgg_nm ILIKE %s"
+            params.append(f"%{sgg.strip()}%")
+        base_sql += " LIMIT 10"
+        cur.execute(base_sql, params)
+        rows = cur.fetchall()
+        return [SangkwonResult(
+            bizes_id=r[0], bizes_nm=r[1], branch_nm=r[2] or None,
+            indu_lclass_nm=r[3], indu_mclass_nm=r[4], indu_sclass_nm=r[5],
+            sgg_nm=r[6], admdong_nm=r[7], road_addr=r[8],
+            lon=float(r[9]) if r[9] else None,
+            lat=float(r[10]) if r[10] else None
+        ) for r in rows]
     finally:
         release_conn(conn)
