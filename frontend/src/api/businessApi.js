@@ -12,3 +12,11 @@ export async function fetchBusinessStatus(bNo) {
   }
   return res.json();
 }
+
+export async function searchStore(q, sido = '') {
+  const params = new URLSearchParams({ q });
+  if (sido) params.append('sido', sido);
+  const res = await fetch(`${API_BASE_URL}/api/business/search?${params}`);
+  if (!res.ok) throw new Error('상호명 검색 실패');
+  return res.json();
+}

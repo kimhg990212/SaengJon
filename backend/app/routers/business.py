@@ -56,7 +56,7 @@ def get_business_status(req: BusinessStatusRequest):
 
 
 @router.get("/search", response_model=list[SangkwonResult])
-def search_store(q: str, sgg: str | None = None):
+def search_store(q: str, sido: str | None = None):
     """상호명으로 소진공 DB 검색. 최대 10건."""
     if len(q.strip()) < 2:
         raise HTTPException(status_code=400, detail="검색어는 2글자 이상 입력해주세요.")
@@ -69,9 +69,9 @@ def search_store(q: str, sgg: str | None = None):
             "FROM sangkwon WHERE bizes_nm ILIKE %s"
         )
         params = [f"%{q.strip()}%"]
-        if sgg:
-            base_sql += " AND sgg_nm ILIKE %s"
-            params.append(f"%{sgg.strip()}%")
+        if sido:
+            base_sql += " AND sido_nm ILIKE %s"
+            params.append(f"%{sido.strip()}%")
         base_sql += " LIMIT 10"
         cur.execute(base_sql, params)
         rows = cur.fetchall()
