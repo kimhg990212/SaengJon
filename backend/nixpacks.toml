@@ -1,0 +1,8 @@
+[phases.setup]
+nixPkgs = ["python310", "zlib", "libpq", "gcc"]
+
+[phases.install]
+cmds = ["python3.10 -m ensurepip", "python3.10 -m pip install -r requirements.txt"]
+
+[start]
+cmd = "python3.10 -m uvicorn app.main:app --host 0.0.0.0 --port $PORT"
