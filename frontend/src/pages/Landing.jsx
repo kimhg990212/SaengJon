@@ -1,3 +1,5 @@
+// Role: 메인 랜딩 페이지 - Hero 섹션만 표시
+import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
 import { useTheme } from '../hooks/useTheme'
 import ThemeToggle from '../components/ThemeToggle'
@@ -5,26 +7,25 @@ import ThemeToggle from '../components/ThemeToggle'
 export default function Landing() {
   const navigate = useNavigate()
   const { theme, toggleTheme } = useTheme()
+  const [showConfirm, setShowConfirm] = useState(false)
 
   return (
     <div className="min-h-screen bg-white text-[#0a0c10] dark:bg-[#0a0c10] dark:text-[#e8eaf0] overflow-x-hidden font-['Noto_Sans_KR'] transition-colors">
+
       {/* Nav */}
       <nav className="fixed top-0 left-0 right-0 z-50 flex justify-between items-center px-10 py-5 border-b border-black/[0.06] dark:border-white/[0.05] backdrop-blur-md bg-white/80 dark:bg-[#0a0c10]/80">
-        <div>
+        <div className="cursor-pointer" onClick={() => setShowConfirm(true)}>
           <span className="font-['Syne'] text-xl font-extrabold tracking-tight text-gray-900 dark:text-white">생존</span>
           <span className="font-mono text-[10px] text-gray-400 dark:text-gray-600 ml-2">SAENGJEON</span>
         </div>
         <div className="flex items-center gap-6">
-          <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">서비스 소개</span>
+          <span
+            onClick={() => navigate('/service')}
+            className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors"
+          >서비스 소개</span>
           <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">데이터 파트너</span>
           <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">요금제</span>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
-          <button
-            onClick={() => navigate('/dashboard')}
-            className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-[13px] rounded-lg transition-all font-medium"
-          >
-            대시보드 →
-          </button>
         </div>
       </nav>
 
@@ -50,7 +51,7 @@ export default function Landing() {
 
           <div className="flex gap-3 mb-14">
             <button
-              onClick={() => navigate('/dashboard')}
+              onClick={() => navigate('/diagnose')}
               className="px-7 py-3.5 bg-green-500 hover:bg-green-600 text-white text-[14px] font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20 hover:-translate-y-0.5"
             >
               무료로 진단받기 →
@@ -91,11 +92,9 @@ export default function Landing() {
                 <div className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-red-500/10 border border-red-500/20 text-red-600 dark:text-red-400 text-[10px] font-mono mt-1">위험</div>
               </div>
             </div>
-            {/* Score bar */}
             <div className="h-1.5 bg-gray-200 dark:bg-[#161b26] rounded-full overflow-hidden mb-3">
               <div className="h-full rounded-full bg-gradient-to-r from-green-500 via-yellow-400 to-red-500" style={{ width: '92%' }} />
             </div>
-            {/* Factors */}
             <div className="grid grid-cols-3 gap-2">
               {[
                 { label: '매출 변화', val: '▼ 31%' },
@@ -168,77 +167,6 @@ export default function Landing() {
         </div>
       </section>
 
-      {/* How it works */}
-      <section className="px-10 py-24 max-w-[1400px] mx-auto border-t border-black/[0.06] dark:border-white/[0.05]">
-        <div className="mb-12">
-          <div className="font-mono text-[11px] text-green-600 dark:text-green-400 tracking-widest uppercase mb-2">How it works</div>
-          <h2 className="font-['Syne'] text-[36px] font-bold tracking-tight">3단계로 끝나는 위험 진단</h2>
-        </div>
-        <div className="grid grid-cols-3 gap-5">
-          {[
-            { num:'01', title:'사업자번호 입력', desc:'10자리 사업자등록번호만 입력하면 끝. 별도 서류나 재무정보 불필요.', icon:'◎', color:'#22c55e' },
-            { num:'02', title:'AI 자동 분석', desc:'경기도 유동인구, 카드매출, 인허가 데이터를 AI가 실시간으로 분석합니다.', icon:'⬡', color:'#f97316' },
-            { num:'03', title:'위험 리포트 수령', desc:'0~100 위험지수와 핵심 원인, 대응 방안을 즉시 확인하세요.', icon:'▤', color:'#22c55e' },
-          ].map(f => (
-            <div key={f.num} className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-2xl p-7 hover:border-green-500/20 transition-all">
-              <div className="flex items-center gap-2 mb-5">
-                <span className="font-mono text-[11px] text-gray-500 dark:text-gray-600">{f.num}</span>
-                <span className="text-xl" style={{ color: f.color }}>{f.icon}</span>
-              </div>
-              <h3 className="font-['Syne'] text-[18px] font-bold mb-2">{f.title}</h3>
-              <p className="text-[13px] text-gray-500 leading-relaxed">{f.desc}</p>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      {/* B2B/B2G */}
-      <section className="px-10 py-24 border-t border-black/[0.06] dark:border-white/[0.05]">
-        <div className="max-w-[1400px] mx-auto grid grid-cols-2 gap-12 items-center">
-          <div>
-            <div className="font-mono text-[11px] text-green-600 dark:text-green-400 tracking-widest uppercase mb-3">Enterprise & Government</div>
-            <h2 className="font-['Syne'] text-[32px] font-bold tracking-tight leading-tight mb-4">
-              기관·금융사를 위한<br />데이터 파트너십
-            </h2>
-            <p className="text-[14px] text-gray-500 dark:text-gray-400 leading-relaxed mb-7">
-              생존이 수집·분석한 소상공인 위험 데이터를 보증기관, 지자체, 금융기관에 API로 제공합니다.<br />
-              <span className="text-gray-700 dark:text-gray-200">기보·신보·소진공·경기도청</span>의 정책 설계를 돕습니다.
-            </p>
-            <button className="px-5 py-2.5 border border-green-500/40 text-green-600 dark:text-green-400 hover:bg-green-500/10 rounded-lg text-[13px] transition-all">
-              파트너십 문의 →
-            </button>
-          </div>
-          <div className="grid grid-cols-2 gap-3">
-            {[
-              { label:'기보·신보', desc:'보증 심사 리스크 보조지표', icon:'🏦' },
-              { label:'소진공', desc:'사전 경영 위기 알림 연계', icon:'🏢' },
-              { label:'경기도청', desc:'소상공인 정책 타겟팅', icon:'🏛️' },
-              { label:'지역 금융', desc:'대출 리스크 사전 감지', icon:'💳' },
-            ].map(p => (
-              <div key={p.label} className="bg-gray-50 dark:bg-[#10141c] border border-black/[0.06] dark:border-white/[0.07] rounded-xl p-5 hover:border-green-500/20 transition-all">
-                <div className="text-2xl mb-2">{p.icon}</div>
-                <div className="font-semibold text-[13px] mb-1">{p.label}</div>
-                <div className="text-[11px] text-gray-500">{p.desc}</div>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      {/* CTA Bottom */}
-      <section className="px-10 py-20 text-center border-t border-black/[0.06] dark:border-white/[0.05]">
-        <h2 className="font-['Syne'] text-[42px] font-extrabold tracking-tight mb-3">
-          지금 바로 진단해보세요
-        </h2>
-        <p className="text-[14px] text-gray-500 mb-8">무료 · 1분 이내 · 사업자번호만 있으면 OK</p>
-        <button
-          onClick={() => navigate('/dashboard')}
-          className="px-10 py-4 bg-green-500 hover:bg-green-600 text-white text-[15px] font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20 hover:-translate-y-0.5"
-        >
-          무료로 진단받기 →
-        </button>
-      </section>
-
       {/* Footer */}
       <footer className="border-t border-black/[0.06] dark:border-white/[0.05] px-10 py-7 flex justify-between items-center">
         <div>
@@ -247,6 +175,31 @@ export default function Landing() {
         </div>
         <div className="text-[12px] text-gray-500 dark:text-gray-600">© 2026 HelperLab. 경기도 소상공인 AI 폐업예측 플랫폼</div>
       </footer>
+
+      {/* 처음화면 확인 다이얼로그 */}
+      {showConfirm && (
+        <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/40 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#10141c] rounded-2xl p-8 shadow-2xl border border-black/[0.08] dark:border-white/[0.08] max-w-sm w-full mx-4">
+            <div className="text-2xl mb-4 text-center">🏠</div>
+            <h3 className="font-['Syne'] text-[18px] font-bold text-center mb-2">처음 화면으로 돌아가시겠습니까?</h3>
+            <p className="text-[13px] text-gray-500 text-center mb-7">메인 페이지로 이동합니다.</p>
+            <div className="flex gap-3">
+              <button
+                onClick={() => { setShowConfirm(false); navigate('/') }}
+                className="flex-1 py-2.5 bg-green-500 hover:bg-green-600 text-white text-[14px] font-semibold rounded-xl transition-all"
+              >
+                확인
+              </button>
+              <button
+                onClick={() => setShowConfirm(false)}
+                className="flex-1 py-2.5 border border-black/[0.1] dark:border-white/[0.1] text-gray-600 dark:text-gray-400 hover:bg-gray-50 dark:hover:bg-white/[0.05] text-[14px] rounded-xl transition-all"
+              >
+                취소
+              </button>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   )
 }
