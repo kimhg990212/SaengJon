@@ -1,5 +1,5 @@
 [phases.setup]
-nixPkgs = ["python310", "zlib", "libpq", "gcc"]
+nixPkgs = ["python310", "zlib", "postgresql", "gcc"]
 
 [phases.install]
 cmds = ["python3.10 -m ensurepip", "python3.10 -m pip install -r requirements.txt"]
