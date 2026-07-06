@@ -1,7 +1,7 @@
 // Role: 파티클 배경 캔버스 - 부모는 position:relative 필요
 import { useEffect, useRef } from 'react'
 
-export default function ParticleBackground() {
+export default function ParticleBackground({ theme = 'dark' }) {
   const canvasRef = useRef(null)
 
   useEffect(() => {
@@ -25,6 +25,10 @@ export default function ParticleBackground() {
       r: Math.random() * 1.5 + 0.5,
     }))
 
+    const lineAlpha  = theme === 'dark' ? 0.4  : 0.55
+    const dotAlpha   = theme === 'dark' ? 0.5  : 0.65
+    const dotColor   = theme === 'dark' ? '34,197,94' : '22,163,74'
+
     function draw() {
       ctx.clearRect(0, 0, canvas.width, canvas.height)
 
@@ -42,7 +46,7 @@ export default function ParticleBackground() {
           const dist = Math.sqrt(dx * dx + dy * dy)
           if (dist < 120) {
             ctx.beginPath()
-            ctx.strokeStyle = `rgba(34,197,94,${0.4 * (1 - dist / 120)})`
+            ctx.strokeStyle = `rgba(${dotColor},${lineAlpha * (1 - dist / 120)})`
             ctx.lineWidth = 0.5
             ctx.moveTo(particles[i].x, particles[i].y)
             ctx.lineTo(particles[j].x, particles[j].y)
@@ -54,7 +58,7 @@ export default function ParticleBackground() {
       for (const p of particles) {
         ctx.beginPath()
         ctx.arc(p.x, p.y, p.r, 0, Math.PI * 2)
-        ctx.fillStyle = 'rgba(34,197,94,0.5)'
+        ctx.fillStyle = `rgba(${dotColor},${dotAlpha})`
         ctx.fill()
       }
 
@@ -76,7 +80,7 @@ export default function ParticleBackground() {
       cancelAnimationFrame(animId)
       window.removeEventListener('resize', onResize)
     }
-  }, [])
+  }, [theme])
 
   return (
     <canvas
