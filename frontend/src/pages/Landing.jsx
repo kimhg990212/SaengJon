@@ -95,7 +95,7 @@ export default function Landing() {
               fontSize: 'clamp(36px, 4vw, 58px)', lineHeight: 1.1,
               letterSpacing: -2, marginBottom: 24, color: '#fff',
             }}>
-              폐업 <span style={{ color: '#22c55e' }}>6개월 전</span>,<br />
+              폐업 <span style={{ color: '#22c55e', fontFamily: 'Roboto Mono, monospace', fontWeight: 300, letterSpacing: -1 }}>6개월 전</span>,<br />
               신호는 이미<br />
               데이터에 있다
             </h1>

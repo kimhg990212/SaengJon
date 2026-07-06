@@ -150,7 +150,7 @@ export default function DiagnosisSimulator() {
       border: '1px solid rgba(34,197,94,0.2)',
       borderRadius: 10,
       padding: 24,
-      width: 340,
+      width: 480,
       position: 'relative',
       overflow: 'hidden',
       fontFamily: 'Roboto Mono, monospace',
@@ -164,13 +164,13 @@ export default function DiagnosisSimulator() {
       }} />
 
       {/* 헤더 */}
-      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 16 }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', marginBottom: 20 }}>
         <div>
-          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 15, color: '#e2e8f0', marginBottom: 3 }}>{sc.biz}</div>
-          <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 0.3 }}>{sc.bno}</div>
+          <div style={{ fontFamily: 'Syne, sans-serif', fontWeight: 700, fontSize: 19, color: '#e2e8f0', marginBottom: 4 }}>{sc.biz}</div>
+          <div style={{ fontSize: 12, color: 'rgba(255,255,255,0.35)', letterSpacing: 0.3 }}>{sc.bno}</div>
         </div>
         <div style={{
-          padding: '3px 8px', borderRadius: 100, fontSize: 10, fontWeight: 700, letterSpacing: 0.5, whiteSpace: 'nowrap',
+          padding: '4px 12px', borderRadius: 100, fontSize: 11, fontWeight: 700, letterSpacing: 0.5, whiteSpace: 'nowrap',
           background: sc.bad ? 'rgba(239,68,68,0.12)' : 'rgba(34,197,94,0.12)',
           border: `1px solid ${sc.bad ? 'rgba(239,68,68,0.3)' : 'rgba(34,197,94,0.3)'}`,
           color: sc.bad ? '#f87171' : '#4ade80',
@@ -180,20 +180,20 @@ export default function DiagnosisSimulator() {
       </div>
 
       {/* 게이지 */}
-      <div style={{ marginBottom: 14 }}>
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 6 }}>
-          <span style={{ fontSize: 10, color: 'rgba(255,255,255,0.35)', letterSpacing: 1, textTransform: 'uppercase' }}>폐업 위험도</span>
-          <span style={{ fontSize: 28, fontWeight: 300, color: gaugeColor, lineHeight: 1 }}>{displayScore}</span>
+      <div style={{ marginBottom: 18 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'flex-end', marginBottom: 8 }}>
+          <span style={{ fontSize: 11, color: 'rgba(255,255,255,0.35)', letterSpacing: 1, textTransform: 'uppercase' }}>폐업 위험도</span>
+          <span style={{ fontSize: 40, fontWeight: 300, color: gaugeColor, lineHeight: 1 }}>{displayScore}</span>
         </div>
-        <div style={{ height: 5, background: 'rgba(255,255,255,0.07)', borderRadius: 3, overflow: 'hidden' }}>
+        <div style={{ height: 7, background: 'rgba(255,255,255,0.07)', borderRadius: 4, overflow: 'hidden' }}>
           <div style={{
-            height: '100%', borderRadius: 3,
+            height: '100%', borderRadius: 4,
             background: `linear-gradient(90deg, #22c55e, ${gaugeColor})`,
             width: `${displayScore}%`,
             transition: 'width 0.05s linear',
           }} />
         </div>
-        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 9, color: 'rgba(255,255,255,0.2)', marginTop: 3 }}>
+        <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: 10, color: 'rgba(255,255,255,0.2)', marginTop: 4 }}>
           <span>안전 0</span><span>50</span><span>100 위험</span>
         </div>
       </div>
@@ -201,24 +201,24 @@ export default function DiagnosisSimulator() {
       {/* 스파크라인 */}
       <canvas
         ref={sparkRef}
-        width={292} height={56}
-        style={{ width: '100%', height: 56, display: 'block', marginBottom: 14 }}
+        width={432} height={80}
+        style={{ width: '100%', height: 80, display: 'block', marginBottom: 18 }}
       />
 
       {/* 메트릭 2×2 */}
-      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 7, marginBottom: 14 }}>
+      <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: 10, marginBottom: 18 }}>
         {metrics.map(m => (
-          <div key={m.label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 6, padding: '7px 10px' }}>
-            <div style={{ fontSize: 9, color: 'rgba(255,255,255,0.3)', marginBottom: 2, letterSpacing: 0.3 }}>{m.label}</div>
-            <div style={{ fontSize: 13, fontWeight: 500, color: m.color }}>{m.val}</div>
+          <div key={m.label} style={{ background: 'rgba(255,255,255,0.04)', borderRadius: 8, padding: '10px 14px' }}>
+            <div style={{ fontSize: 10, color: 'rgba(255,255,255,0.3)', marginBottom: 4, letterSpacing: 0.3 }}>{m.label}</div>
+            <div style={{ fontSize: 16, fontWeight: 500, color: m.color }}>{m.val}</div>
           </div>
         ))}
       </div>
 
       {/* 분석 메시지 */}
-      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 11, color: 'rgba(255,255,255,0.4)' }}>
+      <div style={{ display: 'flex', alignItems: 'center', gap: 8, fontSize: 12, color: 'rgba(255,255,255,0.4)' }}>
         <span style={{
-          width: 6, height: 6, borderRadius: '50%', flexShrink: 0,
+          width: 7, height: 7, borderRadius: '50%', flexShrink: 0,
           background: '#22c55e',
           boxShadow: done ? '0 0 8px #22c55e' : 'none',
           animation: done ? 'none' : 'blink 0.8s ease-in-out infinite',

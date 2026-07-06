@@ -110,10 +110,10 @@ export default function ServiceIntro() {
           <span className="text-[13px] text-gray-500 hover:text-gray-900 dark:hover:text-white cursor-pointer transition-colors">요금제</span>
           <ThemeToggle theme={theme} onToggle={toggleTheme} />
           <button
-            onClick={() => navigate('/dashboard')}
+            onClick={() => navigate('/diagnose')}
             className="px-4 py-2 bg-green-500 hover:bg-green-600 text-white text-[13px] rounded-lg transition-all font-medium"
           >
-            대시보드 →
+            무료 진단 →
           </button>
         </div>
       </nav>
@@ -325,7 +325,7 @@ export default function ServiceIntro() {
         </h2>
         <p className="text-[14px] text-gray-500 mb-8">무료 · 1분 이내 · 사업자번호만 있으면 OK</p>
         <button
-          onClick={() => navigate('/dashboard')}
+          onClick={() => navigate('/diagnose')}
           className="px-10 py-4 bg-green-500 hover:bg-green-600 text-white text-[15px] font-semibold rounded-xl transition-all shadow-lg shadow-green-500/20 hover:-translate-y-0.5"
         >
           무료로 진단받기 →
