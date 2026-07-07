@@ -1,9 +1,7 @@
-import os
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
 from app.config import CORS_ORIGINS
 from app.routers import business
-from app import sangkwon_search
 
 app = FastAPI(title="SaengJon API")
 
@@ -15,10 +13,6 @@ app.add_middleware(
 )
 
 app.include_router(business.router)
-
-@app.on_event("startup")
-async def startup_event():
-    pass  # sangkwon_search.download_db()  # 임시 비활성화
 
 @app.get("/")
 def root():
