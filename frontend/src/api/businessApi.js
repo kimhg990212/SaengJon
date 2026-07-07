@@ -1,9 +1,13 @@
 const API_BASE_URL = import.meta.env.VITE_API_URL || 'http://localhost:8000';
 
+const COMMON_HEADERS = {
+  'ngrok-skip-browser-warning': 'true',
+};
+
 export async function fetchBusinessStatus(bNo) {
   const res = await fetch(`${API_BASE_URL}/api/business/status`, {
     method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
+    headers: { ...COMMON_HEADERS, 'Content-Type': 'application/json' },
     body: JSON.stringify({ b_no: bNo }),
   });
   if (!res.ok) {
@@ -16,7 +20,9 @@ export async function fetchBusinessStatus(bNo) {
 export async function searchStore(q, sido = '') {
   const params = new URLSearchParams({ q });
   if (sido) params.append('sido', sido);
-  const res = await fetch(`${API_BASE_URL}/api/business/search?${params}`);
+  const res = await fetch(`${API_BASE_URL}/api/business/search?${params}`, {
+    headers: COMMON_HEADERS,
+  });
   if (!res.ok) throw new Error('상호명 검색 실패');
   return res.json();
 }
