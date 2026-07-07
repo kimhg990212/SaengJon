@@ -56,22 +56,7 @@ def get_business_status(req: BusinessStatusRequest):
         release_conn(conn)
 
 
-@router.get("/search", response_model=list[SangkwonResult])
+@router.get("/search")
 def search_store(q: str, sgg: str | None = None):
-    """상호명으로 소진공 SQLite 검색. 최대 10건."""
-    if len(q.strip()) < 2:
-        raise HTTPException(status_code=400, detail="검색어는 2글자 이상 입력해주세요.")
-    results = sangkwon_search.search(q, sgg)
-    return [SangkwonResult(
-        bizes_id=r['bizes_id'],
-        bizes_nm=r['bizes_nm'],
-        branch_nm=r.get('branch_nm'),
-        indu_lclass_nm=r.get('indu_lclass_nm'),
-        indu_mclass_nm=None,
-        indu_sclass_nm=r.get('indu_sclass_nm'),
-        sgg_nm=r.get('sgg_nm'),
-        admdong_nm=r.get('admdong_nm'),
-        road_addr=r.get('road_addr'),
-        lon=r.get('lon'),
-        lat=r.get('lat')
-    ) for r in results]
+    """임시 비활성화 — 빈 결과 반환"""
+    return []

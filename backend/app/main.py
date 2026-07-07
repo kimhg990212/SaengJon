@@ -18,7 +18,7 @@ app.include_router(business.router)
 
 @app.on_event("startup")
 async def startup_event():
-    sangkwon_search.download_db()
+    pass  # sangkwon_search.download_db()  # 임시 비활성화
 
 @app.get("/")
 def root():
