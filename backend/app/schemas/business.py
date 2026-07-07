@@ -16,7 +16,9 @@ class SangkwonResult(BaseModel):
     indu_lclass_nm: Optional[str] = None
     indu_mclass_nm: Optional[str] = None
     indu_sclass_nm: Optional[str] = None
+    indu_sclass_cd: Optional[str] = None
     sgg_nm: Optional[str] = None
+    admdong_cd: Optional[str] = None
     admdong_nm: Optional[str] = None
     road_addr: Optional[str] = None
     lon: Optional[float] = None

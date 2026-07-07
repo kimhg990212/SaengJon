@@ -65,7 +65,7 @@ def search_store(q: str, sgg: str | None = None):
         cur = conn.cursor()
         base_sql = (
             "SELECT bizes_id, bizes_nm, branch_nm, indu_lclass_nm, indu_mclass_nm, "
-            "indu_sclass_nm, sgg_nm, admdong_nm, road_addr, lon, lat "
+            "indu_sclass_nm, indu_sclass_cd, sgg_nm, admdong_cd, admdong_nm, road_addr, lon, lat "
             "FROM sangkwon WHERE bizes_nm ILIKE %s"
         )
         params = [f"%{q.strip()}%"]
@@ -78,9 +78,10 @@ def search_store(q: str, sgg: str | None = None):
         return [SangkwonResult(
             bizes_id=r[0], bizes_nm=r[1], branch_nm=r[2] or None,
             indu_lclass_nm=r[3], indu_mclass_nm=r[4], indu_sclass_nm=r[5],
-            sgg_nm=r[6], admdong_nm=r[7], road_addr=r[8],
-            lon=float(r[9]) if r[9] else None,
-            lat=float(r[10]) if r[10] else None
+            indu_sclass_cd=r[6] or None, sgg_nm=r[7], admdong_cd=r[8] or None,
+            admdong_nm=r[9], road_addr=r[10],
+            lon=float(r[11]) if r[11] else None,
+            lat=float(r[12]) if r[12] else None
         ) for r in rows]
     finally:
         release_conn(conn)
