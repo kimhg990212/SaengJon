@@ -3,6 +3,7 @@ from datetime import datetime, timedelta
 from app.db import get_conn, release_conn
 from app.apis.nts_api import lookup_business_status, NtsApiError
 from app.schemas.business import BusinessStatusRequest, BusinessStatusResponse, SangkwonResult
+from app import sangkwon_search
 
 router = APIRouter(prefix="/api/business", tags=["business"])
 
@@ -56,31 +57,21 @@ def get_business_status(req: BusinessStatusRequest):
 
 
 @router.get("/search", response_model=list[SangkwonResult])
-def search_store(q: str, sido: str | None = None):
-    """상호명으로 소진공 DB 검색. 최대 10건."""
+def search_store(q: str, sgg: str | None = None):
+    """상호명으로 소진공 SQLite 검색. 최대 10건."""
     if len(q.strip()) < 2:
         raise HTTPException(status_code=400, detail="검색어는 2글자 이상 입력해주세요.")
-    conn = get_conn()
-    try:
-        cur = conn.cursor()
-        base_sql = (
-            "SELECT bizes_id, bizes_nm, branch_nm, indu_lclass_nm, indu_mclass_nm, "
-            "indu_sclass_nm, sgg_nm, admdong_nm, road_addr, lon, lat "
-            "FROM sangkwon WHERE bizes_nm ILIKE %s"
-        )
-        params = [f"%{q.strip()}%"]
-        if sido:
-            base_sql += " AND sido_nm ILIKE %s"
-            params.append(f"%{sido.strip()}%")
-        base_sql += " LIMIT 10"
-        cur.execute(base_sql, params)
-        rows = cur.fetchall()
-        return [SangkwonResult(
-            bizes_id=r[0], bizes_nm=r[1], branch_nm=r[2] or None,
-            indu_lclass_nm=r[3], indu_mclass_nm=r[4], indu_sclass_nm=r[5],
-            sgg_nm=r[6], admdong_nm=r[7], road_addr=r[8],
-            lon=float(r[9]) if r[9] else None,
-            lat=float(r[10]) if r[10] else None
-        ) for r in rows]
-    finally:
-        release_conn(conn)
+    results = sangkwon_search.search(q, sgg)
+    return [SangkwonResult(
+        bizes_id=r['bizes_id'],
+        bizes_nm=r['bizes_nm'],
+        branch_nm=r.get('branch_nm'),
+        indu_lclass_nm=r.get('indu_lclass_nm'),
+        indu_mclass_nm=None,
+        indu_sclass_nm=r.get('indu_sclass_nm'),
+        sgg_nm=r.get('sgg_nm'),
+        admdong_nm=r.get('admdong_nm'),
+        road_addr=r.get('road_addr'),
+        lon=r.get('lon'),
+        lat=r.get('lat')
+    ) for r in results]

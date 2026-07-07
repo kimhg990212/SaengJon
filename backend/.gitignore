@@ -1,4 +1,6 @@
 .env
 __pycache__/
 *.pyc
-data/
+data/*
+!data/sangkwon.db
+!data/sangkwon_index.csv
