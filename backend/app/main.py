@@ -18,10 +18,7 @@ app.include_router(business.router)
 
 @app.on_event("startup")
 async def startup_event():
-    if os.path.exists(sangkwon_search.DB_PATH):
-        print(f"sangkwon.db 확인됨: {sangkwon_search.DB_PATH}")
-    else:
-        print(f"WARNING: sangkwon.db 없음 — 상호명 검색 불가")
+    sangkwon_search.download_db()
 
 @app.get("/")
 def root():

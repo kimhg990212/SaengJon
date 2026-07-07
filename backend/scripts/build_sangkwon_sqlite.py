@@ -4,7 +4,6 @@ import os
 
 INPUT_FILES = [
     "backend/data/소상공인시장진흥공단_상가(상권)정보_경기_202603.csv",
-    "backend/data/소상공인시장진흥공단_상가(상권)정보_서울_202603.csv",
 ]
 OUTPUT_DB = "backend/data/sangkwon.db"
 
@@ -40,6 +39,8 @@ for INPUT_FILE in INPUT_FILES:
         reader = csv.DictReader(f)
         for row in reader:
             if not row.get('상호명', '').strip():
+                continue
+            if not row.get('경도', '').strip() or not row.get('위도', '').strip():
                 continue
             batch.append((
                 row.get('상가업소번호', ''),
